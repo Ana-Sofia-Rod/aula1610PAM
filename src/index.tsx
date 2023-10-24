@@ -1,53 +1,70 @@
 import React from "react";
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import {
+    FlatList,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from "react-native";
 
-interface Tarefa{
+interface Tarefa {
     id: string;
     title: string;
 }
 
-
 export const Home = () => {
 
+    {/*[] - array*/}
     const [newTask, setNewTask] = React.useState('');
-    const [tarefas, setTarefas] = React.useState<Tarefa[]>([]);
+    const [tarefas, setTarefas] = React.useState<Tarefa[]>([]);      
 
-    const adcTarefa = () => {
-        const dados = {
-            id: String(new Date().getTime()),
-            title: newTask ? newTask : 'Registro vazio',
-        };
-        setTarefas([...tarefas, dados]);
-    };
+        const adcTarefa = () => {
+            const dados = {
+                    id: String(new Date().getTime()),
+                    title: newTask ? newTask : 'Registro vazio',
+                };
+                setTarefas([...tarefas, dados]);
+                setNewTask('');
+            };
+        
+        const removerTarefa = (id: String) =>{
+            const tarefasAtualizadas = tarefas.filter((tarefa) => tarefa.id !== id);
+            setTarefas (tarefasAtualizadas);
+
+        }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Tarefas do dia</Text>
-            <TextInput onChangeText={setNewTask} placeholderTextColor='#555' placeholder="Tarefas" style={styles.fields} />
-            <TouchableOpacity onPress={adcTarefa} activeOpacity={0.7}style={styles.button}>
-                <Text style={styles.buttonText}>Cadastrar</Text>
+            <TextInput onChangeText={setNewTask} value={newTask} placeholderTextColor='#555' placeholder="Tarefas" style={styles.fields} />
+            <TouchableOpacity onPress={adcTarefa} activeOpacity={0.7} style={styles.button}>
+                <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
             <Text style={styles.title}>Lista de tarefas</Text>
 
-
-           {/* <ScrollView>
+            {/*Scrollbar*/}
+            {/*<ScrollView>
                 {tarefas.map((tarefa : Tarefa) => (
-            <TouchableOpacity key={tarefa.id}>
-                <Text style={styles.title}>{tarefa.title}</Text>
-            </TouchableOpacity>
-            ))}
-            </ScrollView>*/}
+                    <TouchableOpacity key={tarefa.id}>
+                        <Text style={styles.buttonText}>{tarefa.title}</Text>
+                    </TouchableOpacity>
+                ))}
+                </ScrollView>*/}
 
             <FlatList
                 data={tarefas}
                 keyExtractor={(item: Tarefa) => item.id}
                 renderItem={({item} : {item: Tarefa}) => (
-                    <TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={() => removerTarefa(item.id)}
+                        style={styles.renderList}>
                         <Text style={styles.buttonText}>{item.title}</Text>
                     </TouchableOpacity>
-                )}>
-            </FlatList>
-            </View>
+                )}
+            />
+
+        </View>
     );
 };
 
@@ -60,7 +77,6 @@ const styles = StyleSheet.create({
     },
     title: {
         color: '#f1f1f1',
-
         fontWeight: 'bold',
         fontSize: 15,
         paddingTop: 15,
@@ -86,6 +102,14 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 15,
+    },
+    renderList: {
+        backgroundColor: 'purple',
+        padding: 10,
+        marginTop: 10,
+        borderRadius: 50,
+        allignItems: 'center',
     }
+
   });
   
